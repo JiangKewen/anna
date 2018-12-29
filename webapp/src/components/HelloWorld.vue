@@ -1,113 +1,93 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org"
-          target="_blank"
-        >
-          Core Docs
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://forum.vuejs.org"
-          target="_blank"
-        >
-          Forum
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://chat.vuejs.org"
-          target="_blank"
-        >
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://twitter.com/vuejs"
-          target="_blank"
-        >
-          Twitter
-        </a>
-      </li>
-      <br>
-      <li>
-        <a
-          href="http://vuejs-templates.github.io/webpack/"
-          target="_blank"
-        >
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a
-          href="http://router.vuejs.org/"
-          target="_blank"
-        >
-          vue-router
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vuex.vuejs.org/"
-          target="_blank"
-        >
-          vuex
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vue-loader.vuejs.org/"
-          target="_blank"
-        >
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-        >
-          awesome-vue
-        </a>
-      </li>
-    </ul>
+    <input class="jk_input" type="text" v-model="name" placeholder="请输入用户名">
+    <input class="jk_input" type="password" v-model="password" placeholder="请输入登录密码">
+    <div class="submits" @click="submit" v-html="guides"></div>
+    <span class="smallTips" @click="guides='登录'">登录</span>
+    <span class="smallTips" @click="guides='注册'">注册</span>
+    <!-- <div v-for="(info,key) in users" :key="key">{{ info.name }}</div> -->
   </div>
 </template>
 
 <script>
+import { getUsers } from '../api/user'
 export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      guides: '登录',
+      name: '',
+      password: '',
+      users: null
     }
+  },
+  methods: {
+    initUsers () {
+      getUsers().then(res => {
+        this.users = res
+        console.log(res, 'users')
+      })
+    },
+    submit () {
+      if (this.guides === '登录') {
+        // 登录请求
+        alert('欢迎登录')
+        this.$router.replace('/index')
+      } else {
+        alert('欢迎注册')
+        // 成功后发送登录请求
+        this.$router.replace('/index')
+      }
+    }
+  },
+  mounted () {
+    this.initUsers()
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
+.hello {
+  font-size: 16px;
+  text-align: center;
+  width: 500px;
+  height: 400px;
+  margin: 20vh auto;
+  /* border: 1px solid tan; */
+  color: #FFF;
+  position: relative;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+/* placeholder颜色 */
+.hello input::-webkit-input-placeholder {
+  color: rgb(155, 187, 207);
 }
-li {
+/* 提交按钮 */
+.submits {
+  background: rgb(159, 209, 243);
+  color: #F19F9C;
+  border-radius: 10px;
+  padding: 6px 14px;
+  box-sizing: border-box;
+  cursor: pointer;
   display: inline-block;
-  margin: 0 10px;
+  margin: 10px auto;
 }
-a {
-  color: #42b983;
+/* 右下角切换登录注册span样式 */
+.smallTips {
+  border: 1px solid rgb(58, 173, 226);
+  border-radius: 4px;
+  display: inline-block;
+  height: 12px;
+  line-height: 12px;
+  text-align: center;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+}
+.smallTips:last-child {
+  right: 60px;
 }
 </style>
